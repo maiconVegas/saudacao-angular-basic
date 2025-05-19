@@ -1,0 +1,16 @@
+<div class="container">
+  <h1>Gerador de Saudações</h1>
+  <mat-form-field>
+    <mat-label>Digite seu nome</mat-label>
+    <input matInput type="text" [(ngModel)]="nome">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Digite sua cidade</mat-label>
+    <input matInput type="text" [(ngModel)]="cidade">
+  </mat-form-field>
+  <br>
+  <button mat-fab extended *ngIf="nome && cidade" (click)="gerarSaudacao()">
+    Gerar Saudação
+  </button>
+  <p *ngIf="saudacao">{{saudacao}}</p>
+</div>
