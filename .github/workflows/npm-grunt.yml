@@ -1,0 +1,43 @@
+name: Frontend - CI
+
+on:
+  push:
+    branches: [ "master" ]
+    paths:
+      - 'frontend/**'  
+
+  pull_request:
+    branches: [ "master" ]
+    paths:
+      - 'frontend/**'  
+
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Use Node.js 22.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22.x
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
+
+    - name: Restore dependencies
+      run: npm ci
+      working-directory: ./frontend
+
+    - name: Build
+      run: npm run build
+      working-directory: ./frontend
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: frontend-publish-${{ github.ref_name }}
+        path: frontend/dist/browser
