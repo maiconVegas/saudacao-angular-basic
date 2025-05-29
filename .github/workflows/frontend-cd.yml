@@ -1,0 +1,36 @@
+name: Frontend - CD
+
+on:
+  workflow_run:
+    workflows: ["Frontend - CI"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    environment:
+      name: cd-approval  # Requer aprovação manual
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-publish-${{ github.ref_name }}
+          path: ./dist
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install Netlify CLI
+        run: npm install -g netlify-cli
+
+      - name: Deploy to Netlify
+        run: |
+          netlify deploy --dir=dist \
+            --auth=$NETLIFY_AUTH_TOKEN \
+            --site=$NETLIFY_SITE_ID \
+            --prod
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
