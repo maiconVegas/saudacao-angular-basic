@@ -2,14 +2,14 @@ name: Frontend - CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
     paths:
-      - 'frontend/**'  
+      - 'saudacao-app/**'  
 
   pull_request:
-    branches: [ "master" ]
+    branches: [ "main" ]
     paths:
-      - 'frontend/**'  
+      - 'saudacao-app/**'  
 
   workflow_dispatch:
 
@@ -26,18 +26,18 @@ jobs:
       with:
         node-version: 22.x
         cache: 'npm'
-        cache-dependency-path: frontend/package-lock.json
+        cache-dependency-path: saudacao-app/package-lock.json
 
     - name: Restore dependencies
       run: npm ci
-      working-directory: ./frontend
+      working-directory: ./saudacao-app
 
     - name: Build
       run: npm run build
-      working-directory: ./frontend
+      working-directory: ./saudacao-app
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: frontend-publish-${{ github.ref_name }}
-        path: frontend/dist/browser
+        path: saudacao-app/dist/browser
